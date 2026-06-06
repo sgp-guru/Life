@@ -53,6 +53,14 @@
                 {% if is_admin %}
                     <li><a href="{{ url_for('admin') }}" class="{% if request.path == '/admin' %}active{% endif %}">Admin Dashboard</a></li>
                 {% endif %}
+                <!-- Mobile-only auth links (visible only on small screens) -->
+                {% if is_logged_in %}
+                    <li class="mobile-only-nav-item"><a href="{{ url_for('dashboard') }}"><i class="fas fa-columns" style="margin-right: 8px;"></i> Dashboard</a></li>
+                    <li class="mobile-only-nav-item"><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Logout</a></li>
+                {% else %}
+                    <li class="mobile-only-nav-item"><a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i> Login</a></li>
+                    <li class="mobile-only-nav-item"><a href="{{ url_for('register') }}"><i class="fas fa-user-plus" style="margin-right: 8px;"></i> Join Us</a></li>
+                {% endif %}
             </ul>
 
             <div class="nav-buttons">

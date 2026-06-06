@@ -1274,6 +1274,11 @@ footer {
     to { transform: rotate(360deg); }
 }
 
+/* ─── Mobile-only nav items (hidden on desktop) ──────── */
+.mobile-only-nav-item {
+    display: none;
+}
+
 /* ═══════════════════════════════════════════════════════
    RESPONSIVE DESIGN — All Devices (320px → 1400px+)
    ═══════════════════════════════════════════════════════ */
@@ -1387,6 +1392,16 @@ footer {
     .nav-buttons .btn {
         padding: 8px 14px;
         font-size: 13px;
+    }
+    .nav-buttons .btn {
+        display: none;
+    }
+    .mobile-only-nav-item {
+        display: list-item;
+    }
+    .mobile-only-nav-item a {
+        color: var(--primary) !important;
+        font-weight: 600;
     }
 
     /* Hero */
