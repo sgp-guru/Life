@@ -328,7 +328,7 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if 'admin_user_id' not in session:
             flash('Admin access required. Please log in.', 'danger')
-            return redirect(url_for('admin_login'))
+            return redirect(url_for('login', role='admin'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -492,7 +492,7 @@ def admin_login():
 
         if not email or not password:
             flash('Please enter both email and password.', 'danger')
-            return redirect(url_for('admin_login'))
+            return redirect(url_for('login', role='admin'))
 
         user = fs_get_user_by_email(email)
         if user and user.get('is_admin') and check_password_hash(user.get('password_hash', ''), password):
@@ -504,16 +504,16 @@ def admin_login():
             flash('This account does not have administrator privileges.', 'danger')
         else:
             flash('Invalid admin credentials.', 'danger')
-        return redirect(url_for('admin_login'))
+        return redirect(url_for('login', role='admin'))
 
-    return render_template('admin_login.html')
+    return redirect(url_for('login', role='admin'))
 
 @app.route('/admin/logout')
 def admin_logout():
     session.pop('admin_user_id', None)
     session.pop('admin_username', None)
     flash('You have been logged out of the Admin Panel.', 'info')
-    return redirect(url_for('admin_login'))
+    return redirect(url_for('login', role='admin'))
 
 # ─── Donor Routes ─────────────────────────────────────────────────────────────
 

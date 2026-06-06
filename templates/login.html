@@ -5,30 +5,41 @@
 {% block content %}
 <section class="section" style="display: flex; align-items: center; justify-content: center; min-height: 70vh;">
     <div class="container" style="display: flex; justify-content: center;">
-        <div class="form-container form-auth">
-            <div class="form-title">
-                <h2>Welcome Back</h2>
-                <p>Log in with your email to access your donor dashboard and find contact details.</p>
+        <div id="login-card" class="form-container form-auth" style="transition: border-color 0.3s ease, box-shadow 0.3s ease;">
+            
+            <!-- Tab Switcher -->
+            <div class="login-tabs" style="display: flex; margin-bottom: 25px; border-bottom: 2px solid var(--gray-100);">
+                <button type="button" id="tab-user" class="login-tab active" style="flex: 1; padding: 12px; background: none; border: none; font-family: var(--font-heading); font-weight: 700; font-size: 15px; color: var(--text-secondary); cursor: pointer; transition: var(--transition); border-bottom: 2px solid transparent; margin-bottom: -2px;">
+                    <i class="fas fa-user" style="margin-right: 6px;"></i> User Login
+                </button>
+                <button type="button" id="tab-admin" class="login-tab" style="flex: 1; padding: 12px; background: none; border: none; font-family: var(--font-heading); font-weight: 700; font-size: 15px; color: var(--text-secondary); cursor: pointer; transition: var(--transition); border-bottom: 2px solid transparent; margin-bottom: -2px;">
+                    <i class="fas fa-shield-alt" style="margin-right: 6px;"></i> Admin Login
+                </button>
             </div>
 
-            <form action="{{ url_for('login', next=request.args.get('next', '')) }}" method="POST" autocomplete="off">
+            <div class="form-title">
+                <h2 id="login-title">Welcome Back</h2>
+                <p id="login-subtitle">Log in with your email to access your donor dashboard and find contact details.</p>
+            </div>
+
+            <form id="login-form" action="{{ url_for('login', next=request.args.get('next', '')) }}" method="POST" autocomplete="off">
                 <!-- Email -->
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="email">Email Address</label>
+                    <label id="email-label" for="email">Email Address</label>
                     <input type="email" id="email" name="email" class="form-control" placeholder="johndoe@example.com" required autocomplete="off">
                 </div>
 
                 <!-- Password -->
                 <div class="form-group" style="margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <label for="password">Password</label>
+                        <label id="password-label" for="password">Password</label>
                         <a href="#" id="forgot-password-trigger" style="color: var(--primary); font-size: 13px; font-weight: 600;">Forgot Password?</a>
                     </div>
                     <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
                 </div>
 
                 <!-- Remember Me -->
-                <div class="form-group" style="margin-bottom: 30px;">
+                <div id="remember-me-group" class="form-group" style="margin-bottom: 30px;">
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">
                         <input type="checkbox" name="remember_me" style="width: 16px; height: 16px;">
                         <span>Remember Me</span>
@@ -36,13 +47,105 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 20px;"><i class="fas fa-sign-in-alt"></i> Log In</button>
+                <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%; margin-bottom: 20px;"><i class="fas fa-sign-in-alt"></i> Log In</button>
 
-                <p style="text-align: center; font-size: 14px; color: var(--text-secondary);">
+                <p id="signup-prompt" style="text-align: center; font-size: 14px; color: var(--text-secondary);">
                     New to LifeLink? <a href="{{ url_for('register') }}" style="color: var(--primary); font-weight: 600;">Create Account</a>
                 </p>
             </form>
         </div>
     </div>
 </section>
+
+<style>
+    .login-tab.active {
+        color: var(--primary) !important;
+        border-bottom-color: var(--primary) !important;
+    }
+    [data-theme="dark"] .login-tab.active {
+        color: var(--primary) !important;
+        border-bottom-color: var(--primary) !important;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabUser = document.getElementById('tab-user');
+        const tabAdmin = document.getElementById('tab-admin');
+        const loginCard = document.getElementById('login-card');
+        const loginForm = document.getElementById('login-form');
+        const loginTitle = document.getElementById('login-title');
+        const loginSubtitle = document.getElementById('login-subtitle');
+        const emailLabel = document.getElementById('email-label');
+        const emailInput = document.getElementById('email');
+        const passwordLabel = document.getElementById('password-label');
+        const forgotPassword = document.getElementById('forgot-password-trigger');
+        const rememberMe = document.getElementById('remember-me-group');
+        const submitBtn = document.getElementById('submit-btn');
+        const signupPrompt = document.getElementById('signup-prompt');
+
+        // URLs from template
+        const userActionUrl = "{{ url_for('login', next=request.args.get('next', '')) }}";
+        const adminActionUrl = "{{ url_for('admin_login') }}";
+
+        function switchTab(role) {
+            if (role === 'admin') {
+                tabUser.classList.remove('active');
+                tabAdmin.classList.add('active');
+                
+                // Customize card border color for Admin mode (Red alert highlight)
+                loginCard.style.borderColor = 'rgba(230, 57, 70, 0.4)';
+                loginCard.style.boxShadow = '0 10px 40px rgba(230, 57, 70, 0.05)';
+                
+                // Form action & content
+                loginForm.action = adminActionUrl;
+                loginTitle.textContent = "Admin Access Only";
+                loginSubtitle.textContent = "Restricted area — authorised personnel only";
+                emailLabel.textContent = "Admin Email";
+                emailInput.placeholder = "admin@lifelink.org";
+                passwordLabel.textContent = "Admin Password";
+                
+                // Hide user elements
+                forgotPassword.style.display = 'none';
+                rememberMe.style.display = 'none';
+                signupPrompt.style.display = 'none';
+                
+                // Submit button
+                submitBtn.innerHTML = '<i class="fas fa-shield-alt"></i> Access Control Panel';
+            } else {
+                tabAdmin.classList.remove('active');
+                tabUser.classList.add('active');
+                
+                // Reset card styling
+                loginCard.style.borderColor = 'var(--card-border)';
+                loginCard.style.boxShadow = 'var(--shadow)';
+                
+                // Form action & content
+                loginForm.action = userActionUrl;
+                loginTitle.textContent = "Welcome Back";
+                loginSubtitle.textContent = "Log in with your email to access your donor dashboard and find contact details.";
+                emailLabel.textContent = "Email Address";
+                emailInput.placeholder = "johndoe@example.com";
+                passwordLabel.textContent = "Password";
+                
+                // Show user elements
+                forgotPassword.style.display = 'inline-block';
+                rememberMe.style.display = 'block';
+                signupPrompt.style.display = 'block';
+                
+                // Submit button
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Log In';
+            }
+        }
+
+        tabUser.addEventListener('click', () => switchTab('user'));
+        tabAdmin.addEventListener('click', () => switchTab('admin'));
+
+        // Check URL parameters on load
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('role') === 'admin' || urlParams.get('tab') === 'admin') {
+            switchTab('admin');
+        }
+    });
+</script>
 {% endblock %}
