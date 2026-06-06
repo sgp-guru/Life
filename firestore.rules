@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if the user is an Admin
+    // Uses get() to query the user document from the 'users' collection
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // --- Users Collection ---
+    // Users can read and write their own account data.
+    // Admins have full access.
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // --- Donors Collection ---
+    // Logged-in users can search/view donor profiles.
+    // Donors can create and edit their own profiles (linked by document id = user auth uid).
+    // Admins can manage all donor records (CRUD).
+    match /donors/{donorId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && (request.auth.uid == donorId || isAdmin());
+    }
+
+    // --- Blood Requests Collection ---
+    // Open blood requests can be viewed by anyone (even guest/anonymous users) in emergencies.
+    // Only registered users can create emergency requests.
+    // Only administrators can edit, toggle fulfillment, or delete emergency requests.
+    match /blood_requests/{requestId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+  }
+}

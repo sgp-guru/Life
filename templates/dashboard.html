@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - LifeLink Blood Donor Finder{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>User Dashboard</h2>
+            <p>Manage your account, update your donor status, and control your search visibility.</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Sidebar / User Info -->
+            <div class="dashboard-sidebar">
+                <div class="card-glass" style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background-color: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: var(--shadow);">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 20px; color: var(--text-color);">{{ current_username }}</h3>
+                        <span class="badge-status available" style="background-color: var(--primary-light); color: var(--primary); font-size: 10px;">Verified Account</span>
+                    </div>
+                    
+                    {% if donor %}
+                        <div style="border-top: 1px solid var(--border-color); width: 100%; padding-top: 15px; margin-top: 10px;">
+                            <div class="switch-container" style="justify-content: center;">
+                                <label class="switch">
+                                    <input type="checkbox" id="availability-toggle" {% if donor.is_available %}checked{% endif %}>
+                                    <span class="slider"></span>
+                                </label>
+                                <span id="availability-status-label" class="badge-status {% if donor.is_available %}available{% else %}unavailable{% endif %}">
+                                    {% if donor.is_available %}Available{% else %}Unavailable{% endif %}
+                                </span>
+                            </div>
+                            <small style="color: var(--gray-500); display: block; margin-top: 8px; font-size: 11px;">Toggle availability to appear in search results</small>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <ul class="dashboard-menu">
+                    <li><a href="{{ url_for('dashboard') }}" class="active"><i class="fas fa-columns"></i> Dashboard Overview</a></li>
+                    {% if donor %}
+                        <li><a href="{{ url_for('edit_donor') }}"><i class="fas fa-user-edit"></i> Edit Donor Profile</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('register_donor') }}"><i class="fas fa-hand-holding-heart"></i> Register as Donor</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('emergency') }}"><i class="fas fa-bullhorn"></i> Raise Emergency Request</a></li>
+                </ul>
+            </div>
+
+            <!-- Main Panel -->
+            <div>
+                {% if donor %}
+                    <!-- Donor Profile Details -->
+                    <div class="card-glass" style="background-color: var(--card-bg);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;">
+                            <h3 style="font-size: 22px; color: var(--text-color);"><i class="fas fa-id-card" style="color: var(--primary);"></i> Donor Profile Details</h3>
+                            <div class="donor-blood-badge">{{ donor.blood_group }}</div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; font-size: 15px; margin-bottom: 25px;">
+                            <div>
+                                <p style="color: var(--text-secondary); margin-bottom: 4px; font-size: 13px;">Full Name</p>
+                                <p><strong>{{ donor.name }}</strong></p>
+                            </div>
+                            <div>
+                                <p style="color: var(--text-secondary); margin-bottom: 4px; font-size: 13px;">Age / Gender</p>
+                                <p><strong>{{ donor.age }} Years / {{ donor.gender }}</strong></p>
+                            </div>
+                            <div>
+                                <p style="color: var(--text-secondary); margin-bottom: 4px; font-size: 13px;">Mobile Number</p>
+                                <p><strong>{{ donor.phone }}</strong></p>
+                            </div>
+                            <div>
+                                <p style="color: var(--text-secondary); margin-bottom: 4px; font-size: 13px;">Email Address</p>
+                                <p><strong>{{ donor.email }}</strong></p>
+                            </div>
+                            <div>
+                                <p style="color: var(--text-secondary); margin-bottom: 4px; font-size: 13px;">Location</p>
+                                <p><strong>{{ donor.city }}, {{ donor.state }}, India</strong></p>
+                            </div>
+                            <div>
+                                <p style="color: var(--text-secondary); margin-bottom: 4px; font-size: 13px;">Weight (kg)</p>
+                                <p><strong>{{ donor.weight }} kg</strong></p>
+                            </div>
+                            <div>
+                                <p style="color: var(--text-secondary); margin-bottom: 4px; font-size: 13px;">Last Donation Date</p>
+                                <p><strong>{% if donor.last_donation_date %}{{ donor.last_donation_date }}{% else %}First-time Donor{% endif %}</strong></p>
+                            </div>
+                            <div>
+                                <p style="color: var(--text-secondary); margin-bottom: 4px; font-size: 13px;">Health Declaration Status</p>
+                                <p><strong style="color: var(--success);"><i class="fas fa-check-circle"></i> Verified Healthy</strong></p>
+                            </div>
+                        </div>
+
+                        <div style="border-top: 1px solid var(--border-color); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                            <a href="{{ url_for('edit_donor') }}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit Details</a>
+                            
+                            <!-- Delete/Deregister Form -->
+                            <form action="{{ url_for('delete_donor') }}" method="POST" onsubmit="return confirm('Are you sure you want to deregister as a donor? Your profile will be permanently deleted from the database.');">
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Deregister Donor Profile</button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Register CTA -->
+                    <div class="card-glass" style="text-align: center; padding: 50px 30px; background-color: var(--card-bg);">
+                        <i class="fas fa-heartbeat" style="font-size: 60px; color: var(--primary); margin-bottom: 20px; display: inline-block; animation: heartbeat 1.5s infinite;"></i>
+                        <h3 style="font-size: 24px; margin-bottom: 10px;">Become a Blood Donor Today</h3>
+                        <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 30px auto;">You haven't registered as a blood donor yet. By registering, you make your profile searchable to patients in need. You can toggle your availability anytime.</p>
+                        <a href="{{ url_for('register_donor') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Register as a Blood Donor</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}Find Blood Donors - LifeLink{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Find Blood Donors</h2>
+            <p>Filter by blood group, state, and city to find compatible blood donors across India.</p>
+        </div>
+
+        <!-- Search Filters Form -->
+        <div class="search-container">
+            <form action="{{ url_for('find_donor') }}" method="GET" class="search-form">
+                <!-- Blood Group Filter -->
+                <div class="form-group">
+                    <label for="blood_group">Blood Group</label>
+                    <select id="blood_group" name="blood_group" class="form-control">
+                        <option value="">All Blood Groups</option>
+                        {% for bg in blood_groups %}
+                            <option value="{{ bg }}" {% if search_params.blood_group == bg %}selected{% endif %}>{{ bg }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- State Filter -->
+                <div class="form-group">
+                    <label for="state">State / UT</label>
+                    <select id="state" name="state" class="form-control">
+                        <option value="">All States</option>
+                        {% for st in states_list %}
+                            <option value="{{ st }}" {% if search_params.state == st %}selected{% endif %}>{{ st }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- City Filter -->
+                <div class="form-group">
+                    <label for="city">City / District</label>
+                    <select id="city" name="city" class="form-control" data-selected="{{ search_params.city }}">
+                        <option value="">All Cities</option>
+                        {% if search_params.city %}
+                            <option value="{{ search_params.city }}" selected>{{ search_params.city }}</option>
+                        {% endif %}
+                    </select>
+                </div>
+
+                <!-- Search Button -->
+                <div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fas fa-search"></i> Search Donors</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Search Results Grid -->
+        {% if donors %}
+            <div class="donor-grid">
+                {% for donor in donors %}
+                    <div class="donor-card {% if not donor.available %}unavailable{% endif %}">
+                        <div class="donor-card-header">
+                            <div>
+                                <h3 class="donor-name">{{ donor.name }}</h3>
+                                <div class="donor-location">
+                                    <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
+                                    <span>{{ donor.city }}, {{ donor.state }}, India</span>
+                                </div>
+                            </div>
+                            <div class="donor-blood-badge">{{ donor.blood_group }}</div>
+                        </div>
+                        
+                        <div class="donor-card-body">
+                            <div class="donor-info-item">
+                                <span>Age / Gender:</span>
+                                <span>{{ donor.age }} yrs / {{ donor.gender }}</span>
+                            </div>
+                            <div class="donor-info-item">
+                                <span>Weight:</span>
+                                <span>{{ donor.weight }} kg</span>
+                            </div>
+                            <div class="donor-info-item">
+                                <span>Last Donated:</span>
+                                <span>
+                                    {% if donor.last_donation %}
+                                        {{ donor.last_donation }}
+                                    {% else %}
+                                        First-time Donor
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="donor-info-item">
+                                <span>Status:</span>
+                                <span>
+                                    {% if donor.available %}
+                                        <span class="badge-status available">Available</span>
+                                    {% else %}
+                                        <span class="badge-status unavailable">Unavailable</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <!-- Contact Display with Privacy Control -->
+                            <div class="donor-info-item" style="border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;">
+                                <span>Mobile:</span>
+                                <span>
+                                    {% if is_logged_in %}
+                                        <strong>{{ donor.phone }}</strong>
+                                    {% else %}
+                                        <span style="color: var(--gray-500); font-style: italic;">+91 XXXXX XXXXX</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="donor-info-item">
+                                <span>Email:</span>
+                                <span>
+                                    {% if is_logged_in %}
+                                        <strong>{{ donor.email }}</strong>
+                                    {% else %}
+                                        <span style="color: var(--gray-500); font-style: italic;">hidden@email.com</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="donor-card-footer">
+                            {% if is_logged_in %}
+                                {% if donor.available %}
+                                    <a href="tel:{{ donor.phone }}" class="btn btn-primary btn-sm donor-phone-btn"><i class="fas fa-phone"></i> Contact Donor</a>
+                                {% else %}
+                                    <button class="btn btn-secondary btn-sm donor-phone-btn" disabled><i class="fas fa-calendar-times"></i> Temporarily Unavailable</button>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ url_for('login', next=request.full_path) }}" class="btn btn-secondary btn-sm donor-phone-btn"><i class="fas fa-lock"></i> Login to View Details</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- No Results UI -->
+            <div class="no-results">
+                <i class="fas fa-search" style="font-size: 50px; color: var(--gray-500); margin-bottom: 20px;"></i>
+                <h3>No Matching Donors Found</h3>
+                <p>We couldn't find any donors in this state/city. Try selecting an alternative region or expanding your blood type filter.</p>
+                <div style="margin-top: 25px; display: flex; gap: 15px; justify-content: center;">
+                    <a href="{{ url_for('find_donor') }}" class="btn btn-secondary btn-sm"><i class="fas fa-redo"></i> Reset Search</a>
+                    <a href="{{ url_for('emergency') }}" class="btn btn-primary btn-sm"><i class="fas fa-bullhorn"></i> Raise Emergency Request</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

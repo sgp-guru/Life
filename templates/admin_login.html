@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login – LifeLink Control Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0a0c13;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-body);
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(230, 57, 70, 0.12) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, rgba(114, 9, 183, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .admin-login-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        /* Top badge */
+        .admin-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .admin-badge-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #e63946, #b5179e);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(230, 57, 70, 0.4);
+        }
+
+        .admin-badge-text h1 {
+            font-family: var(--font-heading);
+            font-size: 22px;
+            font-weight: 800;
+            color: #f8f9fa;
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        .admin-badge-text span {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Card */
+        .admin-card {
+            background: #161922;
+            border: 1px solid rgba(230, 57, 70, 0.15);
+            border-radius: 20px;
+            padding: 36px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .admin-card-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .admin-card-header h2 {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 700;
+            color: #f8f9fa;
+            margin-bottom: 6px;
+        }
+
+        .admin-card-header p {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        /* Divider */
+        .admin-divider {
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, #e63946, #b5179e);
+            border-radius: 2px;
+            margin: 12px auto 0;
+        }
+
+        /* Alert flash */
+        .admin-alert {
+            background: rgba(230, 57, 70, 0.1);
+            border: 1px solid rgba(230, 57, 70, 0.3);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #f8a4a9;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Form */
+        .admin-form-group {
+            margin-bottom: 20px;
+        }
+
+        .admin-form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #adb5bd;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .admin-input-wrap {
+            position: relative;
+        }
+
+        .admin-input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #495057;
+            font-size: 15px;
+        }
+
+        .admin-form-control {
+            width: 100%;
+            padding: 13px 14px 13px 42px;
+            background: #0f1016;
+            border: 1px solid #2c3142;
+            border-radius: 10px;
+            color: #f8f9fa;
+            font-family: var(--font-body);
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .admin-form-control:focus {
+            outline: none;
+            border-color: #e63946;
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.15);
+        }
+
+        .admin-form-control::placeholder {
+            color: #495057;
+        }
+
+        /* Submit button */
+        .admin-submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #e63946, #b5179e);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 28px;
+            box-shadow: 0 8px 25px rgba(230, 57, 70, 0.3);
+        }
+
+        .admin-submit-btn:hover {
+            background: linear-gradient(135deg, #c92a37, #7209b7);
+            transform: translateY(-1px);
+            box-shadow: 0 12px 30px rgba(230, 57, 70, 0.4);
+        }
+
+        /* Footer note */
+        .admin-footer-note {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 13px;
+            color: #495057;
+        }
+
+        .admin-footer-note a {
+            color: #e63946;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .admin-footer-note a:hover {
+            color: #f8a4a9;
+        }
+
+        /* Security notice */
+        .security-notice {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: rgba(42, 157, 143, 0.08);
+            border: 1px solid rgba(42, 157, 143, 0.2);
+            border-radius: 8px;
+            font-size: 12px;
+            color: #2a9d8f;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 480px) {
+            .admin-card {
+                padding: 24px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-login-wrapper">
+        <!-- Brand Badge -->
+        <div class="admin-badge">
+            <div class="admin-badge-icon">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <div class="admin-badge-text">
+                <h1>LifeLink</h1>
+                <span>Admin Control Panel</span>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2><i class="fas fa-shield-alt" style="color: #e63946; margin-right: 8px;"></i> Admin Access Only</h2>
+                <p>Restricted area — authorised personnel only</p>
+                <div class="admin-divider"></div>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="admin-alert">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Security Notice -->
+            <div class="security-notice">
+                <i class="fas fa-lock"></i>
+                <span>This session is encrypted and monitored for security</span>
+            </div>
+
+            <form method="POST" action="{{ url_for('admin_login') }}" autocomplete="off">
+                <div class="admin-form-group">
+                    <label for="admin-email">Admin Email</label>
+                    <div class="admin-input-wrap">
+                        <i class="fas fa-envelope admin-input-icon"></i>
+                        <input
+                            type="email"
+                            id="admin-email"
+                            name="email"
+                            class="admin-form-control"
+                            placeholder="admin@lifelink.org"
+                            required
+                            autocomplete="off"
+                        >
+                    </div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="admin-password">Admin Password</label>
+                    <div class="admin-input-wrap">
+                        <i class="fas fa-lock admin-input-icon"></i>
+                        <input
+                            type="password"
+                            id="admin-password"
+                            name="password"
+                            class="admin-form-control"
+                            placeholder="Enter admin password"
+                            required
+                            autocomplete="new-password"
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" class="admin-submit-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Access Control Panel
+                </button>
+            </form>
+
+            <div class="admin-footer-note" style="margin-top: 20px;">
+                <a href="{{ url_for('home') }}"><i class="fas fa-arrow-left"></i> Back to Public Site</a>
+            </div>
+        </div>
+
+        <div class="admin-footer-note" style="margin-top: 16px;">
+            &copy; 2026 LifeLink &mdash; Secure Admin Portal
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if donor %}Update Donor Profile - LifeLink{% else %}Register as Donor - LifeLink{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="form-container">
+            <div class="form-title">
+                <h2>{% if donor %}Update Donor Profile{% else %}Become a Blood Donor{% endif %}</h2>
+                <p>{% if donor %}Edit your contact details and donor credentials.{% else %}Fill out the form below to register yourself in our database.{% endif %}</p>
+            </div>
+            
+            <form action="{% if donor %}{{ url_for('edit_donor') }}{% else %}{{ url_for('register_donor') }}{% endif %}" method="POST">
+                
+                <!-- Name -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="name">Full Name <span style="color: var(--primary);">*</span></label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="John Doe" value="{% if donor %}{{ donor.name }}{% endif %}" required>
+                </div>
+
+                <div class="form-row" style="margin-bottom: 20px;">
+                    <!-- Age -->
+                    <div class="form-group">
+                        <label for="age">Age <span style="color: var(--primary);">*</span></label>
+                        <input type="number" id="age" name="age" class="form-control" placeholder="e.g. 25" min="18" max="65" value="{% if donor %}{{ donor.age }}{% endif %}" required>
+                        <small style="color: var(--gray-500); font-size: 11px;">Must be between 18 and 65 years old</small>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="form-group">
+                        <label for="gender">Gender <span style="color: var(--primary);">*</span></label>
+                        <select id="gender" name="gender" class="form-control" required>
+                            <option value="" disabled {% if not donor %}selected{% endif %}>Select Gender</option>
+                            <option value="Male" {% if donor and donor.gender == 'Male' %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if donor and donor.gender == 'Female' %}selected{% endif %}>Female</option>
+                            <option value="Other" {% if donor and donor.gender == 'Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-bottom: 20px;">
+                    <!-- Blood Group -->
+                    <div class="form-group">
+                        <label for="blood_group">Blood Group <span style="color: var(--primary);">*</span></label>
+                        <select id="blood_group" name="blood_group" class="form-control" required>
+                            <option value="" disabled {% if not donor %}selected{% endif %}>Select Blood Group</option>
+                            {% for bg in blood_groups %}
+                                <option value="{{ bg }}" {% if donor and donor.blood_group == bg %}selected{% endif %}>{{ bg }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Last Donation Date -->
+                    <div class="form-group">
+                        <label for="last_donation_date">Last Donation Date</label>
+                        <input type="date" id="last_donation_date" name="last_donation_date" class="form-control" value="{% if donor %}{{ donor.last_donation }}{% endif %}">
+                        <small style="color: var(--gray-500); font-size: 11px;">Leave blank if you have never donated before</small>
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-bottom: 20px;">
+                    <!-- Phone -->
+                    <div class="form-group">
+                        <label for="phone">Mobile Number <span style="color: var(--primary);">*</span></label>
+                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="10-digit mobile number" value="{% if donor %}{{ donor.phone }}{% endif %}" required>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">Email Address <span style="color: var(--primary);">*</span></label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="johndoe@example.com" value="{% if donor %}{{ donor.email }}{% endif %}" required>
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-bottom: 20px;">
+                    <!-- Country (Fixed as India) -->
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <input type="text" id="country" class="form-control" value="India" readonly style="background-color: var(--gray-100); color: var(--gray-500); cursor: not-allowed;">
+                    </div>
+
+                    <!-- Weight -->
+                    <div class="form-group">
+                        <label for="weight">Weight (kg) <span style="color: var(--primary);">*</span></label>
+                        <input type="number" id="weight" name="weight" class="form-control" placeholder="e.g. 62" min="50" step="0.1" value="{% if donor %}{{ donor.weight }}{% endif %}" required>
+                        <small style="color: var(--gray-500); font-size: 11px;">Must be at least 50 kg to donate</small>
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-bottom: 30px;">
+                    <!-- State Selection -->
+                    <div class="form-group">
+                        <label for="state">State / Union Territory <span style="color: var(--primary);">*</span></label>
+                        <select id="state" name="state" class="form-control" required>
+                            <option value="" disabled {% if not donor %}selected{% endif %}>Select State</option>
+                            {% for st in states_list %}
+                                <option value="{{ st }}" {% if donor and donor.state == st %}selected{% endif %}>{{ st }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- City Selection -->
+                    <div class="form-group">
+                        <label for="city">City / District <span style="color: var(--primary);">*</span></label>
+                        <select id="city" name="city" class="form-control" data-selected="{% if donor %}{{ donor.city }}{% endif %}" required>
+                            <option value="" disabled {% if not donor %}selected{% endif %}>Select City</option>
+                            {% if donor %}
+                                <option value="{{ donor.city }}" selected>{{ donor.city }}</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Health Declaration -->
+                <div class="form-group" style="margin-bottom: 30px;">
+                    <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-weight: 500; font-size: 14px;">
+                        <input type="checkbox" id="health_declaration" name="health_declaration" style="width: 18px; height: 18px; margin-top: 2px;" {% if donor %}checked{% endif %} required>
+                        <span>I declare that I am in good general health, weigh over 50kg, and satisfy the eligibility guidelines to donate blood.</span>
+                    </label>
+                </div>
+
+                <div style="display: flex; gap: 15px; justify-content: flex-end;">
+                    <a href="{% if donor %}{{ url_for('dashboard') }}{% else %}{{ url_for('home') }}{% endif %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        {% if donor %}<i class="fas fa-save"></i> Save Changes{% else %}<i class="fas fa-heart"></i> Register Now{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

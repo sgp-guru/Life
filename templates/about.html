@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - LifeLink Blood Donor Finder{% endblock %}
+
+{% block content %}
+<!-- About Hero -->
+<section class="hero" style="padding: 60px 0 40px 0; margin-bottom: 40px;">
+    <div class="container" style="text-align: center;">
+        <h1 style="font-size: 40px; margin-bottom: 15px;">About <span style="color: var(--primary);">LifeLink</span></h1>
+        <p style="max-width: 700px; margin: 0 auto; color: var(--text-secondary); font-size: 16px;">We are a technology-first health platform dedicated to bridging the critical gap between blood donors and patients across India. Our goal is to leverage instant updates to save lives in real time.</p>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="section" style="background-color: var(--card-bg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div class="container about-grid">
+        <div class="card-glass" style="background-color: var(--bg-color);">
+            <h3 style="font-size: 22px; color: var(--primary); margin-bottom: 15px;"><i class="fas fa-bullseye"></i> Our Mission</h3>
+            <p style="color: var(--text-secondary);">To establish a reliable, cloud-based, real-time database of voluntary blood donors in India that patients and hospital administrators can search instantaneously in critical times. We aim to ensure that no life is lost due to a delay in sourcing blood.</p>
+        </div>
+        <div class="card-glass" style="background-color: var(--bg-color);">
+            <h3 style="font-size: 22px; color: var(--primary); margin-bottom: 15px;"><i class="fas fa-eye"></i> Our Vision</h3>
+            <p style="color: var(--text-secondary);">To cultivate a society where blood donations are entirely voluntary and readily available. Through technology, we aim to streamline the process, optimize donor availability, and reduce emergency wait times to zero.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Eligibility & Benefits -->
+<section class="section">
+    <div class="container about-grid">
+        <div>
+            <h2 style="font-size: 30px; margin-bottom: 20px;">Eligibility Criteria (India Guidelines)</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Before registering as a blood donor on LifeLink, please ensure you satisfy the following standard healthcare eligibility criteria defined by national authorities:</p>
+            
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; color: var(--text-secondary);">
+                <li style="display: flex; gap: 10px; font-size: 15px;"><i class="fas fa-check" style="color: var(--success); margin-top: 5px;"></i> <div><strong>Age:</strong> You must be between 18 and 65 years old.</div></li>
+                <li style="display: flex; gap: 10px; font-size: 15px;"><i class="fas fa-check" style="color: var(--success); margin-top: 5px;"></i> <div><strong>Weight:</strong> You must weigh at least 50 kg (110 lbs). Donors below 50kg are not permitted.</div></li>
+                <li style="display: flex; gap: 10px; font-size: 15px;"><i class="fas fa-check" style="color: var(--success); margin-top: 5px;"></i> <div><strong>Hemoglobin level:</strong> Minimum 12.5 g/dL.</div></li>
+                <li style="display: flex; gap: 10px; font-size: 15px;"><i class="fas fa-check" style="color: var(--success); margin-top: 5px;"></i> <div><strong>Donation Interval:</strong> At least 90 days (3 months) for males and 120 days for females since the last whole blood donation.</div></li>
+                <li style="display: flex; gap: 10px; font-size: 15px;"><i class="fas fa-check" style="color: var(--success); margin-top: 5px;"></i> <div><strong>Health:</strong> You must be in good general health, not suffering from acute infections, chronic heart/renal issues, or under active antibiotics.</div></li>
+            </ul>
+        </div>
+
+        <div>
+            <h2 style="font-size: 30px; margin-bottom: 20px;">Benefits of Donating Blood</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Donating blood is not just a noble act that saves lives; it also offers physiological benefits to the donor:</p>
+            
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; color: var(--text-secondary);">
+                <li style="display: flex; gap: 10px; font-size: 15px;"><i class="fas fa-heart" style="color: var(--primary); margin-top: 5px;"></i> <div><strong>Stimulates Cell Production:</strong> Encourages the body to produce new red blood cells to replenish the supply.</div></li>
+                <li style="display: flex; gap: 10px; font-size: 15px;"><i class="fas fa-heart" style="color: var(--primary); margin-top: 5px;"></i> <div><strong>Free Health Screening:</strong> Every donation includes a mini-physical, checking pulse, blood pressure, temperature, and hemoglobin levels.</div></li>
+                <li style="display: flex; gap: 10px; font-size: 15px;"><i class="fas fa-heart" style="color: var(--primary); margin-top: 5px;"></i> <div><strong>Reduces Harmful Iron Stores:</strong> Helps lower blood viscosity and excess iron levels, supporting cardiovascular health.</div></li>
+                <li style="display: flex; gap: 10px; font-size: 15px;"><i class="fas fa-heart" style="color: var(--primary); margin-top: 5px;"></i> <div><strong>Psychological Satisfaction:</strong> The knowledge that you have directly helped save a life boosts mental well-being.</div></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Blood Compatibility Chart -->
+<section class="section" style="background-color: var(--card-bg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+        <div class="section-header">
+            <h2>Blood Group Compatibility</h2>
+            <p>Understanding compatibility is essential to matching patients with correct donors safely.</p>
+        </div>
+        
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Blood Type</th>
+                        <th>Can Give Blood To</th>
+                        <th>Can Receive Blood From</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>A+</strong></td>
+                        <td>A+, AB+</td>
+                        <td>A+, A-, O+, O-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>A-</strong></td>
+                        <td>A+, A-, AB+, AB-</td>
+                        <td>A-, O-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>B+</strong></td>
+                        <td>B+, AB+</td>
+                        <td>B+, B-, O+, O-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>B-</strong></td>
+                        <td>B+, B-, AB+, AB-</td>
+                        <td>B-, O-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AB+</strong> (Universal Recipient)</td>
+                        <td>AB+ only</td>
+                        <td>All Blood Types</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AB-</strong></td>
+                        <td>AB+, AB-</td>
+                        <td>AB-, A-, B-, O-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>O+</strong></td>
+                        <td>O+, A+, B+, AB+</td>
+                        <td>O+, O-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>O-</strong> (Universal Donor)</td>
+                        <td>All Blood Types</td>
+                        <td>O- only</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Accordion -->
+<section class="section" id="faq">
+    <div class="container">
+        <div class="section-header">
+            <h2>Frequently Asked Questions</h2>
+            <p>Got questions about blood donation? We have got you covered.</p>
+        </div>
+        
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How much blood is taken during donation?</span>
+                    <i class="fas fa-plus faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Standard whole blood donations collect exactly 350ml or 450ml of blood depending on the donor's weight and parameters. This is only about 8-10% of the average adult's blood volume, and your body replenishes the fluid volume within 24 hours.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How often can I donate blood in India?</span>
+                    <i class="fas fa-plus faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>According to Indian National Blood Transfusion Council guidelines, healthy male donors can donate blood once every 3 months (90 days) and female donors once every 4 months (120 days).</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Is blood donation painful or unsafe?</span>
+                    <i class="fas fa-plus faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>It is completely safe. Every needle and kit used is sterile, disposable, and opened in front of you, eliminating any risk of contracting bloodborne infections. You will feel a quick, minor pinch when the needle is inserted, followed by a standard resting period.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How long does the donation process take?</span>
+                    <i class="fas fa-plus faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>The actual blood extraction takes only 8 to 10 minutes. However, the entire process—including check-in, a brief medical screening, and resting for refreshments afterwards—takes about 1 hour total.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

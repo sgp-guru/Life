@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LifeLink - Blood Donor Finder{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- FontAwesome CDNs -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Alerts Container for Flash Popups -->
+    <div class="alerts-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <div class="alert-content">
+                            {% if category == 'success' %}
+                                <i class="fas fa-check-circle"></i>
+                            {% elif category == 'danger' %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% elif category == 'warning' %}
+                                <i class="fas fa-exclamation-triangle"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle"></i>
+                            {% endif %}
+                            <span>{{ message }}</span>
+                        </div>
+                        <i class="fas fa-times alert-close"></i>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="container navbar">
+            <a href="{{ url_for('home') }}" class="logo">
+                <i class="fas fa-heartbeat"></i>
+                LifeLink
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
+                <li><a href="{{ url_for('about') }}" class="{% if request.path == '/about' %}active{% endif %}">About Us</a></li>
+                <li><a href="{{ url_for('find_donor') }}" class="{% if request.path == '/find-donor' %}active{% endif %}">Find Donor</a></li>
+                <li><a href="{{ url_for('emergency') }}" class="{% if request.path == '/emergency' %}active{% endif %}">Emergency Request</a></li>
+                <li><a href="{{ url_for('contact') }}" class="{% if request.path == '/contact' %}active{% endif %}">Contact</a></li>
+                {% if is_admin %}
+                    <li><a href="{{ url_for('admin') }}" class="{% if request.path == '/admin' %}active{% endif %}">Admin Dashboard</a></li>
+                {% endif %}
+            </ul>
+
+            <div class="nav-buttons">
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+
+                {% if is_logged_in %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-sm"><i class="fas fa-columns"></i> Dashboard</a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-primary btn-sm"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-secondary btn-sm"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm"><i class="fas fa-user-plus"></i> Join Us</a>
+                {% endif %}
+            </div>
+
+            <button class="menu-toggle" aria-label="Toggle Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-about">
+                <h3><i class="fas fa-heartbeat"></i> LifeLink</h3>
+                <p>Connecting blood donors with patients across India. Join our network today and become a lifesaver in your community.</p>
+                <div class="footer-socials">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('about') }}">About Us</a></li>
+                    <li><a href="{{ url_for('find_donor') }}">Find Donors</a></li>
+                    <li><a href="{{ url_for('emergency') }}">Emergency Board</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h4>For Donors</h4>
+                <ul>
+                    <li><a href="{{ url_for('register_donor') }}">Become a Donor</a></li>
+                    <li><a href="{{ url_for('login') }}">Login Account</a></li>
+                    <li><a href="{{ url_for('about') }}#faq">Donation FAQs</a></li>
+                    <li><a href="{{ url_for('contact') }}">Support Help</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Contact Info</h4>
+                <ul style="color: var(--gray-500); font-size: 14px;">
+                    <li><i class="fas fa-phone"></i> +91 (555) 019-2834</li>
+                    <li><i class="fas fa-envelope"></i> contact@lifelink.org</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Connaught Place, New Delhi, India</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 LifeLink - Blood Donor Finder. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Main JS logic -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

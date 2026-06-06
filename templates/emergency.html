@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Emergency Blood Requests - LifeLink{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Emergency Blood Requests</h2>
+            <p>Post an urgent requirement for blood or review open requests to see if you can donate immediately.</p>
+        </div>
+
+        <div class="contact-grid">
+            <!-- Left: Open Requests List -->
+            <div>
+                <h3 style="font-size: 22px; margin-bottom: 25px; color: var(--secondary);"><i class="fas fa-bullhorn" style="color: var(--primary);"></i> Live Requests</h3>
+                
+                {% if requests %}
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        {% for req in requests %}
+                            <div class="emergency-card">
+                                <div class="emergency-header">
+                                    <h4 style="font-size: 18px; color: var(--secondary);">{{ req.patient_name }}</h4>
+                                    <div class="emergency-blood">{{ req.blood_group }}</div>
+                                </div>
+                                
+                                <div class="emergency-info">
+                                    <p><strong>Hospital:</strong> {{ req.hospital }}</p>
+                                    <p><strong>Location:</strong> {{ req.city }}, {{ req.state }}, India</p>
+                                    <p><strong>Units Required:</strong> {{ req.units_needed }} Unit(s)</p>
+                                    <p><strong>Required By:</strong> <span style="color: var(--primary); font-weight: 700;">{{ req.required_by }}</span></p>
+                                    <p><strong>Contact:</strong> {{ req.contact }}</p>
+                                    <p><strong>Description:</strong> {{ req.description }}</p>
+                                </div>
+                                
+                                <div style="display: flex; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                                    <a href="tel:{{ req.contact }}" class="btn btn-danger btn-sm" style="flex: 1;"><i class="fas fa-phone-alt"></i> Contact Contact Person</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-results">
+                        <i class="fas fa-heart" style="color: var(--success); font-size: 50px;"></i>
+                        <h4 style="margin-top: 15px;">No Open Emergencies</h4>
+                        <p>There are no active emergency blood requests. All requirements are currently met!</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Right: Create Request Form -->
+            <div>
+                <div class="card-glass">
+                    <h3 style="font-size: 22px; margin-bottom: 20px; color: var(--secondary);"><i class="fas fa-plus-circle" style="color: var(--primary);"></i> Raise Blood Request</h3>
+                    
+                    {% if is_logged_in %}
+                        <form action="{{ url_for('emergency') }}" method="POST">
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label for="patient_name">Patient Name <span style="color: var(--primary);">*</span></label>
+                                <input type="text" id="patient_name" name="patient_name" class="form-control" placeholder="e.g. Ramesh Kumar" required>
+                            </div>
+
+                            <div class="form-row" style="margin-bottom: 15px;">
+                                <div class="form-group">
+                                    <label for="blood_group">Blood Group Needed <span style="color: var(--primary);">*</span></label>
+                                    <select id="blood_group" name="blood_group" class="form-control" required>
+                                        <option value="" disabled selected>Select Blood Group</option>
+                                        {% for bg in blood_groups %}
+                                            <option value="{{ bg }}">{{ bg }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="units_needed">Units Required <span style="color: var(--primary);">*</span></label>
+                                    <input type="number" id="units_needed" name="units_needed" class="form-control" min="1" value="1" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label for="hospital_name">Hospital Name & Address <span style="color: var(--primary);">*</span></label>
+                                <input type="text" id="hospital_name" name="hospital_name" class="form-control" placeholder="e.g. AIIMS Delhi" required>
+                            </div>
+
+                            <div class="form-row" style="margin-bottom: 15px;">
+                                <!-- State Selection -->
+                                <div class="form-group">
+                                    <label for="state">State / UT <span style="color: var(--primary);">*</span></label>
+                                    <select id="state" name="state" class="form-control" required>
+                                        <option value="" disabled selected>Select State</option>
+                                        {% for st in states_list %}
+                                            <option value="{{ st }}">{{ st }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <!-- City Selection -->
+                                <div class="form-group">
+                                    <label for="city">City / District <span style="color: var(--primary);">*</span></label>
+                                    <select id="city" name="city" class="form-control" required>
+                                        <option value="" disabled selected>Select City</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row" style="margin-bottom: 15px;">
+                                <div class="form-group">
+                                    <label for="contact_phone">Contact Mobile <span style="color: var(--primary);">*</span></label>
+                                    <input type="tel" id="contact_phone" name="contact_phone" class="form-control" placeholder="10-digit number" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="required_by">Required By Date <span style="color: var(--primary);">*</span></label>
+                                    <input type="date" id="required_by" name="required_by" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 25px;">
+                                <label for="description">Emergency Description</label>
+                                <textarea id="description" name="description" class="form-control" rows="3" placeholder="Briefly explain the medical emergency..." style="resize: vertical;"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fas fa-paper-plane"></i> Submit Request</button>
+                        </form>
+                    {% else %}
+                        <div style="text-align: center; padding: 40px 20px;">
+                            <i class="fas fa-lock" style="font-size: 40px; color: var(--gray-500); margin-bottom: 15px;"></i>
+                            <h4>Authentication Required</h4>
+                            <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">You must be logged in to submit an emergency blood request.</p>
+                            <a href="{{ url_for('login', next=request.path) }}" class="btn btn-primary btn-sm"><i class="fas fa-sign-in-alt"></i> Log In to Submit</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block title %}LifeLink - Blood Donor Finder & Emergency Request{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+    <div class="container hero-grid">
+        <div class="hero-content">
+            <h1>Connecting Blood Donors Across <span>India</span></h1>
+            <p>LifeLink is a state-of-the-art platform designed to link blood donors with patients during emergencies. Search for donors in real time, register to save lives, or raise urgent requests instantly.</p>
+            <div class="hero-cta">
+                <a href="{{ url_for('find_donor') }}" class="btn btn-primary"><i class="fas fa-search"></i> Find Blood Donor</a>
+                <a href="{{ url_for('register_donor') }}" class="btn btn-secondary"><i class="fas fa-hand-holding-heart"></i> Become a Donor</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="{{ url_for('static', filename='img/hero-banner.png') }}" alt="LifeLink Blood Donation Hero Illustration">
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats">
+    <div class="container stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-number">{{ total_donors }}</div>
+            <div class="stat-label">Registered Donors</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-heartbeat"></i></div>
+            <div class="stat-number">{{ available_donors }}</div>
+            <div class="stat-label">Available Donors</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-check-double"></i></div>
+            <div class="stat-number">{{ completed_requests }}+</div>
+            <div class="stat-label">Requests Completed</div>
+        </div>
+    </div>
+</section>
+
+<!-- Blood Group Availability Chart & Awareness -->
+<section class="section">
+    <div class="container about-grid">
+        <!-- Chart -->
+        <div>
+            <h2 style="font-size: 30px; margin-bottom: 20px;">Blood Group Distribution</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 25px;">Here is the current ratio of registered blood donors available on LifeLink, showing our regional system capacity.</p>
+            
+            <div class="availability-chart-container">
+                <div class="chart-grid">
+                    {% for bg, percentage in chart_data.items() %}
+                        <div class="chart-row">
+                            <span class="chart-label">{{ bg }}</span>
+                            <div class="chart-bar-container">
+                                <div class="chart-bar-fill" data-percentage="{{ percentage }}"></div>
+                            </div>
+                            <span class="chart-value">{{ percentage }}%</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Infographic/Action panel -->
+        <div style="display: flex; flex-direction: column; justify-content: center; gap: 20px;">
+            <h2 style="font-size: 30px;">Every Drop Counts</h2>
+            <p style="color: var(--text-secondary);">Your voluntary donation is vital. If an accident, surgery, or treatment occurs, LifeLink allows hospitals and individuals to source blood within minutes. Registering as a donor takes under 3 minutes.</p>
+            
+            <div style="background-color: var(--card-bg); border: 1px solid var(--card-border); padding: 30px; border-radius: var(--border-radius); box-shadow: var(--shadow);">
+                <h3 style="font-size: 20px; margin-bottom: 15px;"><i class="fas fa-info-circle" style="color: var(--primary);"></i> Who Can Donate?</h3>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: var(--text-secondary);">
+                    <li><i class="fas fa-check" style="color: var(--success);"></i> Age between 18 and 65 years old.</li>
+                    <li><i class="fas fa-check" style="color: var(--success);"></i> Weight is at least 50 kg (110 lbs).</li>
+                    <li><i class="fas fa-check" style="color: var(--success);"></i> Has not donated blood in the last 56 days.</li>
+                    <li><i class="fas fa-check" style="color: var(--success);"></i> In good general health, feeling well.</li>
+                </ul>
+                <a href="{{ url_for('register_donor') }}" class="btn btn-primary btn-sm" style="margin-top: 20px;"><i class="fas fa-heart"></i> Register to Donate</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Urgent Requests Dashboard -->
+<section class="section" style="background-color: var(--card-bg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+        <div class="section-header">
+            <h2>Urgent Blood Requirements</h2>
+            <p>Review the active emergency blood requests across India and contact the families to donate.</p>
+        </div>
+
+        {% if recent_emergencies %}
+            <div class="emergency-grid">
+                {% for req in recent_emergencies %}
+                    <div class="emergency-card">
+                        <div class="emergency-header">
+                            <h3 class="emergency-title">{{ req.patient_name }}</h3>
+                            <div class="emergency-blood">{{ req.blood_group }}</div>
+                        </div>
+                        <div class="emergency-info">
+                            <p><strong>Hospital:</strong> {{ req.hospital }}</p>
+                            <p><strong>Location:</strong> {{ req.city }}, {{ req.state }}, India</p>
+                            <p><strong>Units Needed:</strong> {{ req.units_needed }} Unit(s)</p>
+                            <p><strong>Required By:</strong> {{ req.required_by }}</p>
+                            <p><strong>Description:</strong> {{ req.description }}</p>
+                        </div>
+                        <div style="text-align: center; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                            <a href="tel:{{ req.contact }}" class="btn btn-danger btn-sm" style="width: 100%;"><i class="fas fa-phone"></i> Contact: {{ req.contact }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="{{ url_for('emergency') }}" class="btn btn-secondary"><i class="fas fa-list-ul"></i> View All Urgent Requests</a>
+            </div>
+        {% else %}
+            <div class="no-results" style="background-color: var(--bg-color);">
+                <i class="fas fa-check-circle" style="color: var(--success); font-size: 50px;"></i>
+                <h3 style="margin-top: 15px;">No Urgent Requests Pending</h3>
+                <p>All blood requirements are currently satisfied. You can still register to support future matches!</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>What People Say</h2>
+            <p>Read about the experiences of recipients, medical officers, and voluntary donors on LifeLink.</p>
+        </div>
+        
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-quote">LifeLink saved my father's life during an emergency cardiac surgery. We searched and found a compatible O+ donor within 15 minutes in Mumbai. Truly a lifesaver!</p>
+                <div class="testimonial-user">
+                    <div class="testimonial-avatar">RK</div>
+                    <div>
+                        <h4 class="testimonial-name">Rajesh Kumar</h4>
+                        <span class="testimonial-role">Recipient Family</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <p class="testimonial-quote">As a hospital administrator, sourcing specific blood groups during disasters is highly stressful. LifeLink helps us track verified, available donors nearby efficiently.</p>
+                <div class="testimonial-user">
+                    <div class="testimonial-avatar">AM</div>
+                    <div>
+                        <h4 class="testimonial-name">Dr. Anjali Mehta</h4>
+                        <span class="testimonial-role">Medical Officer</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <p class="testimonial-quote">I love the availability toggle on my dashboard. When I am busy or recently donated, I set it to unavailable. When I am ready to help, I flip it back on. Simple and private!</p>
+                <div class="testimonial-user">
+                    <div class="testimonial-avatar">AS</div>
+                    <div>
+                        <h4 class="testimonial-name">Amit Sharma</h4>
+                        <span class="testimonial-role">Voluntary Donor</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Accordion -->
+<section class="section" style="background-color: var(--card-bg); border-top: 1px solid var(--border-color);">
+    <div class="container">
+        <div class="section-header">
+            <h2>Frequently Asked Questions</h2>
+            <p>Quick answers to basic questions regarding blood donations.</p>
+        </div>
+        
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How much blood is collected?</span>
+                    <i class="fas fa-plus faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Usually, 350ml to 450ml (one unit) of blood is collected. Your body recovers the fluid volume within 24 to 48 hours, and replenishes red blood cells in 4-6 weeks.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Is it safe to donate blood?</span>
+                    <i class="fas fa-plus faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes. LifeLink only links users to sterile hospital labs. All extraction tools are disposable, single-use, and opened only for you, making the process 100% sterile.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How long does the donation process take?</span>
+                    <i class="fas fa-plus faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>The actual blood extraction takes only 8-10 minutes. However, the registration, medical pre-screening, and resting refresheners require about 45 to 60 minutes in total.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

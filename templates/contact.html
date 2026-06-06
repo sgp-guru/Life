@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us - LifeLink Blood Donor Finder{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Contact Us</h2>
+            <p>Have questions, feedback, or need assistance? Reach out to the LifeLink India team.</p>
+        </div>
+
+        <div class="contact-grid">
+            <!-- Contact Info & Map -->
+            <div>
+                <div class="contact-info-list">
+                    <!-- Phone -->
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon"><i class="fas fa-phone-alt"></i></div>
+                        <div>
+                            <h3 style="font-size: 16px; margin-bottom: 4px;">Phone Number</h3>
+                            <p style="color: var(--text-secondary); font-size: 14px;">+91 (555) 019-2834</p>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon"><i class="fas fa-envelope"></i></div>
+                        <div>
+                            <h3 style="font-size: 16px; margin-bottom: 4px;">Email Address</h3>
+                            <p style="color: var(--text-secondary); font-size: 14px;">contact@lifelink.org</p>
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div>
+                            <h3 style="font-size: 16px; margin-bottom: 4px;">Office Address</h3>
+                            <p style="color: var(--text-secondary); font-size: 14px;">100 Health Ave, Connaught Place, New Delhi, Delhi 110001, India</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Google Maps Iframe (Connaught Place, New Delhi) -->
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3501.99616238699!2d77.2167233150824!3d28.62986498241777!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd3655555555%3A0xe5cdcd6f5ab4f63d!2sConnaught%20Place%2C%20New%20Delhi%2C%20Delhi%20110001!5e0!3m2!1sen!2sin!4v1655611293883!5m2!1sen!2sin" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="LifeLink Location Map">
+                    </iframe>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="card-glass">
+                <h3 style="font-size: 22px; margin-bottom: 25px; color: var(--text-color);"><i class="fas fa-paper-plane" style="color: var(--primary);"></i> Send Us a Message</h3>
+                
+                <form action="{{ url_for('contact') }}" method="POST">
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="name">Your Name <span style="color: var(--primary);">*</span></label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="email">Email Address <span style="color: var(--primary);">*</span></label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="johndoe@example.com" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" class="form-control" placeholder="How can we help?">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label for="message">Message <span style="color: var(--primary);">*</span></label>
+                        <textarea id="message" name="message" class="form-control" rows="5" placeholder="Write your message here..." style="resize: vertical;" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fas fa-paper-plane"></i> Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

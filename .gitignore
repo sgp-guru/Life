@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.db
+lifelink.db
+firebase_credentials.json
+.env
+.DS_Store
+Thumbs.db
+*.log
